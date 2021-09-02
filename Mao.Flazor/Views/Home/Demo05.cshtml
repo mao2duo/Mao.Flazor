@@ -1,0 +1,33 @@
+﻿@using Mao.Flazor.Views.Home;
+@inherits Demo05<Demo05_ViewModel>
+
+<h3>從 server 端設置資料來源 (ViewModel And Server Side Rendering)</h3>
+
+@* onchange 的 bindVariable 與 2. 設置的 secondaryOptions 相同，所以執行了那個方法 *@
+<select id="select-primary" onchange="Flazor.bindVariable('secondaryOptions');">
+    <option></option>
+    <option selected="@(Model.PrimaryValue == "A")">A</option>
+    <option selected="@(Model.PrimaryValue == "B")">B</option>
+</select>
+<select id="select-secondary">
+    @RenderSecondaryOptions(Model.SecondaryOptions)
+    @helper RenderSecondaryOptions(
+        // 4. 透過 [FlazorReturnSeletor] 設置將結果做為元件 select-secondary 的 Html
+        // 因為 helper 的方法不能放置標籤，所以 FlazorReturn 開頭的標籤可以放在方法的任一參數上
+        [FlazorReturnSeletor("#select-secondary")]
+        // 3. 透過 [FlazorParamterVariable] 設置資料來源於變數 secondaryOptions
+        [FlazorParamterVariable("secondaryOptions")] SelectListItem[] secondaryOptions)
+    {
+        if (secondaryOptions != null)
+        {
+            foreach (var secondaryOption in secondaryOptions)
+            {
+                <option value="@secondaryOption.Value" selected="@secondaryOption.Selected">@secondaryOption.Text</option>
+            }
+        }
+    }
+</select>
+
+<script type="text/javascript">
+    Flazor.addViewPath("@this.VirtualPath");
+</script>

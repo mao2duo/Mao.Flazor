@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flazor</title>
+    @Styles.Render("~/lib/css")
+    @Scripts.Render("~/lib/js")
+    <script src="~/lib/flazor.js"></script>
+    <script type="text/javascript">
+        Flazor.setBindVariableUrl("@Url.Action("BindVariable", "Flazor", new { Area = "" })");
+        Flazor.setVariableChangedUrl("@Url.Action("VariableChanged", "Flazor", new { Area = "" })");
+        Flazor.addViewPath("@this.VirtualPath");
+    </script>
+    @RenderSection("scripts", required: false)
+</head>
+<body style="padding-top: 3.9rem;">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
+        <a class="navbar-brand" href="@Url.Action("Index", "Home", new { Area = "" })">Flazor</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo01", "Home")">Demo01</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo02", "Home")">Demo02</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo03", "Home")">Demo03</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo04", "Home")">Demo04</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo05", "Home", new { primaryValue = "A" })">Demo05(A)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Demo05", "Home", new { primaryValue = "B" })">Demo05(B)</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+</body>
+</html>

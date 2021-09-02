@@ -1,0 +1,54 @@
+﻿@functions {
+    // 2. 透過 [FlazorReturnVariable] 設置將結果存放置變數 secondaryOptions
+    [FlazorReturnVariable("secondaryOptions")]
+    SelectListItem[] GetSecondaryOptions(
+        // 1. 透過 [FlazorParamterSeletor] 設置參數來源於元件 select-primary
+        [FlazorParamterSeletor("#select-primary")] string primarySelectedValue)
+    {
+        List<SelectListItem> secondaryOptions = new List<SelectListItem>();
+        if (primarySelectedValue == "A")
+        {
+            secondaryOptions.Add(new SelectListItem() { Value = "A001", Text = "A001", Selected = false });
+            secondaryOptions.Add(new SelectListItem() { Value = "A002", Text = "A002", Selected = true });
+            secondaryOptions.Add(new SelectListItem() { Value = "A003", Text = "A003", Selected = false });
+        }
+        if (primarySelectedValue == "B")
+        {
+            secondaryOptions.Add(new SelectListItem() { Value = "B001", Text = "B001", Selected = false });
+            secondaryOptions.Add(new SelectListItem() { Value = "B002", Text = "B002", Selected = false });
+            secondaryOptions.Add(new SelectListItem() { Value = "B003", Text = "B003", Selected = false });
+            secondaryOptions.Add(new SelectListItem() { Value = "B004", Text = "B004", Selected = true });
+        }
+        return secondaryOptions.ToArray();
+    }
+}
+
+<h3>從 server 端設置資料來源 (將 server 端的 code 放在 View)</h3>
+
+@* onchange 的 bindVariable 與 2. 設置的 secondaryOptions 相同，所以執行了那個方法 *@
+<select id="select-primary" onchange="Flazor.bindVariable('secondaryOptions');">
+    <option></option>
+    <option>A</option>
+    <option>B</option>
+</select>
+<select id="select-secondary">
+    @helper RenderSecondaryOptions(
+        // 4. 透過 [FlazorReturnSeletor] 設置將結果做為元件 select-secondary 的 Html
+        // 因為 helper 的方法不能放置標籤，所以 FlazorReturn 開頭的標籤可以放在方法的任一參數上
+        [FlazorReturnSeletor("#select-secondary")]
+        // 3. 透過 [FlazorParamterVariable] 設置資料來源於變數 secondaryOptions
+        [FlazorParamterVariable("secondaryOptions")] SelectListItem[] secondaryOptions)
+    {
+        if (secondaryOptions != null)
+        {
+            foreach (var secondaryOption in secondaryOptions)
+            {
+                <option value="@secondaryOption.Value" selected="@secondaryOption.Selected">@secondaryOption.Text</option>
+            }
+        }
+    }
+</select>
+
+<script type="text/javascript">
+    Flazor.addViewPath("@this.VirtualPath");
+</script>

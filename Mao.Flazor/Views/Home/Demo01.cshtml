@@ -1,0 +1,41 @@
+﻿
+<h3>從 client 端設置資料來源，自行呼叫 Flazor.variableChanged</h3>
+
+<select id="select-primary" onchange="getSecondaryOptions();">
+    <option></option>
+    <option>A</option>
+    <option>B</option>
+</select>
+<select id="select-secondary">
+    @helper RenderSecondaryOptions(
+        // 2. 透過 [FlazorReturnSeletor] 設置將結果做為元件 select-secondary 的 Html
+        // 因為 helper 的方法不能放置標籤，所以 FlazorReturn 開頭的標籤可以放在方法的任一參數上
+        [FlazorReturnSeletor("#select-secondary")]
+        // 1. 透過 [FlazorParamterVariable] 設置資料來源於變數 secondaryOptions
+        [FlazorParamterVariable("secondaryOptions")] SelectListItem[] secondaryOptions)
+    {
+        if (secondaryOptions != null)
+        {
+            foreach (var secondaryOption in secondaryOptions)
+            {
+                <option value="@secondaryOption.Value" selected="@secondaryOption.Selected">@secondaryOption.Text</option>
+            }
+        }
+    }
+</select>
+
+<script type="text/javascript">
+    Flazor.addViewPath("@this.VirtualPath");
+
+    var secondaryOptions;
+    function getSecondaryOptions() {
+        $.get("/api/Demo/GetSecondaryOptions", {
+            primarySelectedValue: $("#select-primary").val()
+        }).done(function (response) {
+            // 改變 secondaryOptions 的值
+            secondaryOptions = response;
+            // 呼叫 Flazor.variableChanged 即可更新所有需要 secondaryOptions 參數的結果
+            Flazor.variableChanged("secondaryOptions");
+        });
+    }
+</script>
